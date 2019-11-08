@@ -20,7 +20,7 @@ spec:
       containers:
       - name: preference-container
         image: navkkrnair/istio-preference:1.0
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         livenessProbe:
           exec:
             command:
