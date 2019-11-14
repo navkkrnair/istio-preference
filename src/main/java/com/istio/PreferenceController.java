@@ -2,6 +2,7 @@ package com.istio;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,8 +10,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
+import io.opentracing.Tracer;
 
 @RestController
 public class PreferenceController
@@ -20,6 +22,9 @@ public class PreferenceController
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private final RestTemplate restTemplate;
+
+	@Autowired
+	private Tracer tracer;
 
 	@Value("${recommendations.api.url:http://recommendation:8080}")
 	private String remoteURL;
@@ -33,7 +38,7 @@ public class PreferenceController
 	public ResponseEntity<?> getPreferences()
 	{
 		logger.info(">> getPreferences() called");
-
+		logger.info(">> Baggage retrieved from Customer for key user-agent: {}", tracer.activeSpan().getBaggageItem("user-agent"));
 		logger.info(">> Calling {}", remoteURL);
 		ResponseEntity<String> responseEntity = restTemplate.getForEntity(remoteURL, String.class);
 		String                 response       = responseEntity.getBody();

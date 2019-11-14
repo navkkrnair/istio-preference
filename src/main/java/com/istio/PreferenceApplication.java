@@ -52,11 +52,4 @@ public class PreferenceApplication
 	{
 		return restTemplateBuilder.build();
 	}
-
-	@Bean
-	public Tracer tracer()
-	{
-		return Configuration.fromEnv().getTracer();
-	}
-
 }
