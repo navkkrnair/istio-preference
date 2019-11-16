@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 import io.jaegertracing.Configuration;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.opentracing.Tracer;
 
 @SpringBootApplication
@@ -52,4 +54,14 @@ public class PreferenceApplication
 	{
 		return restTemplateBuilder.build();
 	}
+
+	@Bean
+	public MeterRegistryCustomizer<MeterRegistry> meterRegistryCustomizer(MeterRegistry registry)
+	{
+		return registry1 ->
+		{
+			registry.config().commonTags("application", "preference-service");
+		};
+	}
+
 }
